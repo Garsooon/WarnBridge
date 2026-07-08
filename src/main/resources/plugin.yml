@@ -1,0 +1,28 @@
+name: WarnBridge
+main: org.garsooon.warnbridge.WarnBridge
+version: ${project.version}
+author: Garsooon
+depend: [DiscordCore]
+softdepend: [AuthMe, DiscordAuthentication]
+commands:
+  warn:
+    description: Issue a warning to a player, bridged to Discord.
+    usage: /warn <player> <message>
+  acknowledge:
+    description: Acknowledge a pending warning.
+    usage: /acknowledge
+    aliases: [ack]
+  warnings:
+    description: View a player's total warnings and their reasons.
+    usage: /warnings <player> [#]
+    aliases: [warning]
+permissions:
+  warnbridge.warn:
+    description: Allows issuing warnings with /warn.
+    default: op
+  warnbridge.acknowledge:
+    description: Allows acknowledging a pending warning.
+    default: true
+  warnbridge.warnings:
+    description: Allows viewing a player's warning history with /warnings.
+    default: op
