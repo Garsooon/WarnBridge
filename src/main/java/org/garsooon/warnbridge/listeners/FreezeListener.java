@@ -1,5 +1,6 @@
 package org.garsooon.warnbridge.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.garsooon.warnbridge.WarnBridge;
 import org.garsooon.warnbridge.commands.WarnCommand;
+import uk.org.whoami.authme.cache.auth.PlayerCache;
 
 import java.util.UUID;
 
@@ -23,7 +25,7 @@ public class FreezeListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (!plugin.getWarningStore().hasPendingWarning(player.getUniqueId())) {
+        if (!isFrozen(player)) {
             return;
         }
 
@@ -38,7 +40,7 @@ public class FreezeListener implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (!plugin.getWarningStore().hasPendingWarning(uuid)) {
+        if (!isFrozen(player)) {
             return;
         }
 
@@ -59,9 +61,21 @@ public class FreezeListener implements Listener {
         }
 
         Player player = (Player) entity;
-        if (plugin.getWarningStore().hasPendingWarning(player.getUniqueId())) {
+        if (isFrozen(player)) {
             event.setCancelled(true);
         }
+    }
+
+    private boolean isFrozen(Player player) {
+        if (!plugin.getWarningStore().hasPendingWarning(player.getUniqueId())) {
+            return false;
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("AuthMe") != null) {
+            return PlayerCache.getInstance().isAuthenticated(player.getName().toLowerCase());
+        }
+
+        return true;
     }
 
     private void repeatWarning(Player player, UUID uuid) {
